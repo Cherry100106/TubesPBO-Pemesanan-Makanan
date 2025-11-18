@@ -2,65 +2,89 @@
 
 ## Tentang Aplikasi
 
-FoodOrderApp adalah aplikasi desktop berbasis Java yang dirancang untuk memudahkan pengguna dalam memesan makanan dan minuman secara interaktif melalui antarmuka grafis (GUI). Aplikasi ini dibangun dengan prinsip **Pemrograman Berorientasi Objek (OOP)** yang kuat, menerapkan konsep seperti **Unit Testing**, **Java Collection Framework**, **Generic Programming**, **Clean Code**, dan minimal **3 Design Pattern**. GUI merupakan komponen **wajib** dalam aplikasi ini, bukan tambahan opsional.
+FoodOrderApp adalah aplikasi desktop berbasis Java yang dirancang untuk memudahkan pengguna dalam memesan makanan dan minuman. Aplikasi ini dibangun dengan prinsip **Pemrograman Berorientasi Objek (OOP)** menggunakan **Maven** dan database **PostgreSQL**.
 
-Dengan FoodOrderApp, pengguna dapat:
+## Fitur Utama Saat Ini
 
-- Melihat daftar menu makanan & minuman
-- Memilih dan menambahkan item ke keranjang
-- Mengelola pesanan secara real-time
-- Mendapatkan tampilan yang responsif dan profesional
+- **Koneksi Database**: Terintegrasi dengan PostgreSQL.
+- **Auto-Seeding**: Database otomatis terisi data awal (tabel & data dummy) saat aplikasi dijalankan.
+- **Struktur Proyek**: Menggunakan Maven Standard Directory Layout.
 
-## Fitur Utama
+## Prasyarat (Wajib Install)
 
-### Manajemen Menu
-
-- Daftar makanan dan minuman dengan harga dan kategori
-- Penambahan dan penghapusan item melalui antarmuka admin (opsional di pengembangan lanjut)
-
-### Pemesanan Interaktif
-
-- Tambah/kurangi jumlah item pesanan
-- Hitung total harga otomatis
-- Validasi input sebelum checkout
-
-### Antarmuka Pengguna (GUI Wajib)
-
-- Tampilan berbasis **JavaFX** modern dan responsif
-- Navigasi antar layar (daftar menu → keranjang → konfirmasi)
-- Umpan balik visual saat aksi dilakukan (misal: item ditambahkan ke keranjang)
-
-### Arsitektur & Teknologi
-
-- **Bahasa**: Java 17+
-- **Framework GUI**: JavaFX
-- **Build Tool**: Maven
-- **Testing**: JUnit 5 (untuk logika non-GUI)
-- **Prinsip OOP**:
-  - Singleton (manajemen pesanan global)
-  - Factory (pembuatan jenis menu)
-  - Observer (notifikasi perubahan keranjang)
-- **Struktur Proyek**:
-  - `model/` → entitas domain (Menu, Order, dll)
-  - `service/` → logika bisnis
-  - `view/` → controller & tampilan GUI (JavaFX FXML + Controller)
-  - `repository/` → penyimpanan data sementara (menggunakan `List`/`Map`)
-  - `util/` → kelas generic & helpers
-
-## Panduan Pengembangan
-
-### Prasyarat
-
-- **Java 17** atau lebih tinggi
-- **Maven** (untuk manajemen dependensi dan build)
-- **Git**
-- IDE (disarankan: VS Code + Extension _Extension Pack for Java_ atau IntelliJ IDEA)
+1.  **Java 17** (atau lebih tinggi)
+2.  **Maven** (Untuk build project)
+3.  **PostgreSQL** (Database Server)
+4.  **VS Code** (dengan Extension Pack for Java) atau **IntelliJ IDEA**.
 
 ---
+
+## Panduan Instalasi & Setup (Langkah demi Langkah)
 
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/Cherry100106/TubesPBO-Pemesanan-Makanan.git
+git clone [https://github.com/Cherry100106/TubesPBO-Pemesanan-Makanan.git](https://github.com/Cherry100106/TubesPBO-Pemesanan-Makanan.git)
 cd TubesPBO-Pemesanan-Makanan
 ```
+
+### 2. Setup Database (PostgreSQL)
+
+1. Buka aplikasi database manager (pgAdmin / DBeaver).
+2. Buat database baru biarkan kosong. Jangan buat tabel apapun manual.
+
+### 3. Atur Password Database
+
+1. Buka File: src/main/java/com/tubes/db/Koneksi.java
+2. Cari dan ubah bagian ini:
+
+```bash
+private static final String PASS = "password_laptop_kalian";
+```
+
+### 4. Build Project
+
+Agar file SQL terbaca oleh sistem, jalankan perintah ini di terminal VS Code sebelum me-run aplikasi:
+
+```bash
+mvn clean compile
+```
+
+### 5. Jalankan Aplikasi
+
+1. Buka file src/main/java/com/tubes/App.java, lalu klik tombol Run.
+2. Jika berhasil, output terminal akan muncul:
+
+```bash
+Memulai Aplikasi...
+Koneksi ke PostgreSQL Berhasil!
+Database berhasil di-seed (Reset & Isi Data)!
+```
+
+## Struktur Folder Proyek
+
+Berikut adalah struktur folder saat ini agar tidak bingung menaruh file:
+
+```bash
+project-pemesanan-makanan/
+├── pom.xml                      <-- File konfigurasi Maven (Library)
+└── src/
+    └── main/
+        ├── java/com/tubes/
+        │   ├── db/
+        │   │   ├── Koneksi.java         # Settingan Database
+        │   │   └── DatabaseSeeder.java  # Script otomatis pengisi data
+        │   └── App.java                 # File Utama (Main Class)
+        └── resources/
+            └── db_init.sql              # Script SQL (Jangan diubah namanya)
+```
+
+## Troubleshooting
+
+Q: Muncul Error "File SQL tidak ditemukan!"
+
+Solusi: Kamu lupa melakukan build. Stop aplikasi, ketik mvn clean compile di terminal, lalu coba Run lagi.
+
+Q: Error "Connection Refused"
+
+Solusi: Pastikan aplikasi PostgreSQL sudah nyala (Start Service) dan password di Koneksi.java sudah benar.
