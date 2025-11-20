@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.collections.FXCollections?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.tubes.ui.MenuFormController"
+      spacing="15" style="-fx-padding: 20; -fx-background-color: white;">
+
+    <Label text="Kelola Menu" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+    <ImageView fx:id="imgPreview" fitWidth="150" fitHeight="120" preserveRatio="true"
+               style="-fx-background-color: #eee;" />
+
+    <TextField fx:id="inputNama" promptText="Nama Menu" />
+    <TextField fx:id="inputHarga" promptText="Harga" />
+
+    <ComboBox fx:id="inputStatus">
+        <items>
+            <FXCollections fx:factory="observableArrayList">
+                <String fx:value="Tersedia"/>
+                <String fx:value="Habis"/>
+            </FXCollections>
+        </items>
+    </ComboBox>
+
+    <Button text="Simpan" fx:id="btnSimpan"
+            style="-fx-background-color: #1976d2; -fx-text-fill: white;" />
+
+</VBox>

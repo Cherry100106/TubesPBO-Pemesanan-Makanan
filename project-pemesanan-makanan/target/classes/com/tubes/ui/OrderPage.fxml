@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.tubes.ui.OrderController">
+
+    <!-- CONTENT -->
+    <center>
+        <HBox spacing="20" style="-fx-padding: 20;"
+              HBox.hgrow="ALWAYS">
+
+            <!-- MENU LIST -->
+            <VBox spacing="10"
+                  VBox.vgrow="ALWAYS"
+                  HBox.hgrow="ALWAYS">
+
+                <Label text="Daftar Menu"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+                <TableView fx:id="tableMenu"
+                           VBox.vgrow="ALWAYS"
+                           HBox.hgrow="ALWAYS">
+
+                    <columns>
+                        <TableColumn fx:id="colNamaMenu" text="Nama Menu" prefWidth="200"/>
+                        <TableColumn fx:id="colHarga" text="Harga" prefWidth="150"/>
+                        <TableColumn fx:id="colStatus" text="Status" prefWidth="150"/>
+                    </columns>
+                </TableView>
+
+                <HBox spacing="10">
+                    <Label text="Jumlah:" />
+                    <TextField fx:id="inputQty" prefWidth="60"/>
+                    <Button text="Tambah ke Keranjang" fx:id="btnAdd"
+                            style="-fx-background-color: #1976d2; -fx-text-fill: white;" />
+                </HBox>
+            </VBox>
+
+            <!-- CART -->
+            <VBox spacing="10"
+                  VBox.vgrow="ALWAYS"
+                  HBox.hgrow="ALWAYS">
+
+                <Label text="Keranjang"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+                <TableView fx:id="tableCart"
+                           VBox.vgrow="ALWAYS"
+                           HBox.hgrow="ALWAYS">
+
+                    <columns>
+                        <TableColumn fx:id="colCartNama" text="Menu" prefWidth="200"/>
+                        <TableColumn fx:id="colCartQty" text="Qty" prefWidth="80"/>
+                        <TableColumn fx:id="colCartSubtotal" text="Subtotal" prefWidth="150"/>
+                    </columns>
+                </TableView>
+
+                <Label text="Total: Rp 0"
+                       fx:id="labelTotal"
+                       style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+            </VBox>
+
+        </HBox>
+    </center>
+
+    <!-- FOOTER -->
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" style="-fx-padding: 20;">
+            <Button text="Konfirmasi Pesanan" fx:id="btnKonfirmasi"
+                    style="-fx-background-color: #1976d2; -fx-text-fill: white;
+                           -fx-padding: 12 20; -fx-font-size: 15px;" />
+        </HBox>
+    </bottom>
+
+</BorderPane>
