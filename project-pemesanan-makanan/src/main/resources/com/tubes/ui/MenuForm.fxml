@@ -4,18 +4,27 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.collections.FXCollections?>
+<?import java.lang.String?>   
 
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.tubes.ui.MenuFormController"
-      spacing="15" style="-fx-padding: 20; -fx-background-color: white;">
+      spacing="15"
+      style="-fx-padding: 20; -fx-background-color: white;">
 
-    <Label text="Kelola Menu" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+    <Label text="Edit Menu"
+           style="-fx-font-size: 20px; -fx-font-weight: bold;" />
 
-    <ImageView fx:id="imgPreview" fitWidth="150" fitHeight="120" preserveRatio="true"
+    <ImageView fx:id="imgPreview"
+               fitWidth="150"
+               fitHeight="120"
+               preserveRatio="true"
                style="-fx-background-color: #eee;" />
 
-    <TextField fx:id="inputNama" promptText="Nama Menu" />
-    <TextField fx:id="inputHarga" promptText="Harga" />
+    <TextField fx:id="inputNama"
+               promptText="Nama Menu" />
+
+    <TextField fx:id="inputHarga"
+               promptText="Harga" />
 
     <ComboBox fx:id="inputStatus">
         <items>
@@ -26,7 +35,8 @@
         </items>
     </ComboBox>
 
-    <Button text="Simpan" fx:id="btnSimpan"
+    <Button fx:id="btnSimpan"
+            text="Simpan"
             style="-fx-background-color: #1976d2; -fx-text-fill: white;" />
 
 </VBox>

@@ -5,16 +5,18 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class MenuCardController {
 
-    @FXML private AnchorPane root;
+    @FXML private AnchorPane cardRoot;
     @FXML private Label txtNama;
     @FXML private Label txtHarga;
     @FXML private Label txtStatus;
+    @FXML private ImageView imgPhoto; // ← WAJIB
 
     private String nama;
     private String harga;
@@ -28,11 +30,14 @@ public class MenuCardController {
         txtNama.setText(nama);
         txtHarga.setText("Rp " + harga);
         txtStatus.setText(status);
+
+        // gambar default sementara
+        imgPhoto.setImage(null);
     }
 
     @FXML
     public void initialize() {
-        root.setOnMouseClicked(e -> openEditForm());
+        cardRoot.setOnMouseClicked(e -> openEditForm());
     }
 
     private void openEditForm() {
@@ -47,8 +52,12 @@ public class MenuCardController {
 
             Stage stage = new Stage();
             stage.setTitle("Edit Menu");
-            stage.setScene(new Scene(root));
+
+            Scene scene = new Scene(root, 350, 400);
+
+            stage.setScene(scene);
             stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
             stage.showAndWait();
 
         } catch (Exception e) {

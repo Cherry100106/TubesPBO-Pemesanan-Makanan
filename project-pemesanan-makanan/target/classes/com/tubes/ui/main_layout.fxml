@@ -26,7 +26,7 @@
             <Button text="Menu Makanan" fx:id="btnMenu"
                     style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 15px;" />
 
-            <Button text="Laporan" fx:id="btnReport"
+            <Button text="Histori Transaksi" fx:id="btnReport"
                     style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 15px;" />
         </VBox>
     </left>

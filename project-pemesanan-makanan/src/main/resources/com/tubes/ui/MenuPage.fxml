@@ -8,6 +8,7 @@
             fx:controller="com.tubes.ui.MenuController"
             prefWidth="1100" prefHeight="700">
 
+    <!-- Header -->
     <top>
         <HBox style="-fx-padding: 20;">
             <Label text="Daftar Menu Makanan"
@@ -18,19 +19,23 @@
     <center>
         <VBox spacing="20" style="-fx-padding: 10 20 20 20;">
 
+            <!-- Button Tambah Menu -->
             <Button text="Tambah Menu" fx:id="btnTambahMenu"
-                    style="-fx-background-color: #1976d2; -fx-text-fill: white; -fx-padding: 8 15;" />
+                    style="-fx-background-color: #1976d2; -fx-text-fill: white;
+                           -fx-padding: 8 15; -fx-font-size: 15px;" />
 
-            <!-- FIXED: ScrollPane tidak menghalangi mouse -->
+            <!-- Scroll Area -->
             <ScrollPane fx:id="scrollContainer"
                         fitToWidth="true"
                         hbarPolicy="NEVER"
                         vbarPolicy="AS_NEEDED"
                         style="-fx-background-color: transparent;">
 
+                <!-- Tempat Card Menu -->
                 <FlowPane fx:id="menuContainer"
                           hgap="20" vgap="20"
-                          prefWidth="1000">
+                          alignment="TOP_LEFT"
+                          style="-fx-padding: 10;">
 
                     <padding>
                         <Insets top="10" right="10" bottom="10" left="10"/>

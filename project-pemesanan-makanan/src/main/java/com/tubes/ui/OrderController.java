@@ -1,14 +1,17 @@
 package com.tubes.ui;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 
 public class OrderController {
 
     @FXML private TableView<?> tableMenu;
     @FXML private TableColumn<?, ?> colNamaMenu;
     @FXML private TableColumn<?, ?> colHarga;
-    @FXML private TableColumn<?, ?> colStatus;
 
     @FXML private TextField inputQty;
     @FXML private Button btnAdd;
@@ -24,6 +27,6 @@ public class OrderController {
     @FXML
     public void initialize() {
         System.out.println("Order Page Loaded");
-        // logic
+        // logic backend
     }
 }

@@ -7,12 +7,11 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.tubes.ui.OrderController">
 
-    <!-- CONTENT -->
     <center>
         <HBox spacing="20" style="-fx-padding: 20;"
               HBox.hgrow="ALWAYS">
 
-            <!-- MENU LIST -->
+            <!-- Daftar Menu -->
             <VBox spacing="10"
                   VBox.vgrow="ALWAYS"
                   HBox.hgrow="ALWAYS">
@@ -25,9 +24,8 @@
                            HBox.hgrow="ALWAYS">
 
                     <columns>
-                        <TableColumn fx:id="colNamaMenu" text="Nama Menu" prefWidth="200"/>
+                        <TableColumn fx:id="colNamaMenu" text="Nama Menu" prefWidth="220"/>
                         <TableColumn fx:id="colHarga" text="Harga" prefWidth="150"/>
-                        <TableColumn fx:id="colStatus" text="Status" prefWidth="150"/>
                     </columns>
                 </TableView>
 
@@ -39,7 +37,7 @@
                 </HBox>
             </VBox>
 
-            <!-- CART -->
+            <!-- Keranjang -->
             <VBox spacing="10"
                   VBox.vgrow="ALWAYS"
                   HBox.hgrow="ALWAYS">
@@ -52,7 +50,7 @@
                            HBox.hgrow="ALWAYS">
 
                     <columns>
-                        <TableColumn fx:id="colCartNama" text="Menu" prefWidth="200"/>
+                        <TableColumn fx:id="colCartNama" text="Menu" prefWidth="220"/>
                         <TableColumn fx:id="colCartQty" text="Qty" prefWidth="80"/>
                         <TableColumn fx:id="colCartSubtotal" text="Subtotal" prefWidth="150"/>
                     </columns>
@@ -66,10 +64,9 @@
         </HBox>
     </center>
 
-    <!-- FOOTER -->
     <bottom>
         <HBox alignment="CENTER_RIGHT" style="-fx-padding: 20;">
-            <Button text="Konfirmasi Pesanan" fx:id="btnKonfirmasi"
+            <Button text="Cetak Struk" fx:id="btnKonfirmasi"
                     style="-fx-background-color: #1976d2; -fx-text-fill: white;
                            -fx-padding: 12 20; -fx-font-size: 15px;" />
         </HBox>

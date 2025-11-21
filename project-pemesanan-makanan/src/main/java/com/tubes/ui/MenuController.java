@@ -7,7 +7,8 @@ import javafx.scene.layout.FlowPane;
 
 public class MenuController {
 
-    @FXML private FlowPane menuContainer;
+    @FXML
+    private FlowPane menuContainer;
 
     @FXML
     public void initialize() {

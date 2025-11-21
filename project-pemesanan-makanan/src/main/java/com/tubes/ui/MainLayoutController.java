@@ -24,7 +24,7 @@ public class MainLayoutController {
         btnDashboard.setOnAction(e -> loadPage("DashboardPage.fxml", "Dashboard"));
         btnOrder.setOnAction(e -> loadPage("OrderPage.fxml", "Kelola Pesanan"));
         btnMenu.setOnAction(e -> loadPage("MenuPage.fxml", "Menu Makanan"));
-        btnReport.setOnAction(e -> loadPage("ReportPage.fxml", "Laporan"));
+        btnReport.setOnAction(e -> loadPage("TransactionHistory.fxml", "Histori Transaksi"));
     }
 
     private void loadPage(String fileName, String title) {
