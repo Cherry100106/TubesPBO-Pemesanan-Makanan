@@ -1,5 +1,8 @@
 package com.tubes.ui;
 
+import com.tubes.cart.CartItem;
+import com.tubes.cart.CartService;
+import com.tubes.cart.DefaultCartItemFactory;
 import com.tubes.menu.MenuItem;
 import com.tubes.menu.MenuRepository;
 
@@ -39,11 +42,10 @@ public class OrderController {
 
     @FXML private Label labelTotal;
     @FXML private Button btnKonfirmasi;
+    
     private final MenuRepository menuRepo = new MenuRepository();
+    private final CartService cartService = new CartService(new DefaultCartItemFactory());
     private ObservableList<MenuItem> menuList;
-
-    private final ObservableList<CartItem> cartList = FXCollections.observableArrayList();
-    private ObservableList<CartItem> cartItems = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
@@ -81,18 +83,18 @@ public class OrderController {
     private void initCartTable() {
 
         colCartNama.setCellValueFactory(data ->
-                new SimpleStringProperty(data.getValue().getNama())
+                new SimpleStringProperty(data.getValue().getMenu().getNamaMakanan())
         );
 
         colCartQty.setCellValueFactory(data ->
-                new SimpleIntegerProperty(data.getValue().getQty()).asObject()
+                new SimpleIntegerProperty(data.getValue().getQuantity()).asObject()
         );
 
         colCartSubtotal.setCellValueFactory(data ->
                 new SimpleDoubleProperty(data.getValue().getSubtotal()).asObject()
         );
 
-        tableCart.setItems(cartList);
+        tableCart.setItems(cartService.getCartItems());
     }
 
     private void setupAddButton() {
@@ -101,7 +103,7 @@ public class OrderController {
 
     private void setupConfirmButton() {
         btnKonfirmasi.setOnAction(e -> {
-            if (cartList.isEmpty()) {
+            if (cartService.getCartItems().isEmpty()) {
                 new Alert(Alert.AlertType.WARNING, "Keranjang masih kosong!").show();
                 return;
             }
@@ -109,7 +111,7 @@ public class OrderController {
             String struk = generateStruk();
             printStruk(struk);
 
-            cartList.clear();
+            cartService.getCartItems().clear();
             updateTotal();
         });
     }
@@ -136,29 +138,13 @@ public class OrderController {
             return;
         }
 
-        for (CartItem item : cartList) {
-            if (item.getNama().equals(selected.getNamaMakanan())) {
-                item.setQty(item.getQty() + qty);
-                tableCart.refresh();
-                updateTotal();
-                return;
-            }
-        }
-
-        cartList.add(new CartItem(
-                selected.getNamaMakanan(),
-                qty,
-                selected.getHarga() * qty
-        ));
-
+        cartService.addToCart(selected, qty);
+        tableCart.refresh();
         updateTotal();
     }
 
     private void updateTotal() {
-        double total = cartList.stream()
-                .mapToDouble(CartItem::getSubtotal)
-                .sum();
-
+        double total = cartService.getTotal();
         labelTotal.setText("Total: Rp " + (int) total);
     }
 
@@ -187,7 +173,7 @@ public class OrderController {
 
                 btnHapus.setOnAction(e -> {
                     CartItem item = getTableView().getItems().get(getIndex());
-                    cartList.remove(item);
+                    cartService.getCartItems().remove(item);
                     updateTotal();
                 });
             }
@@ -200,7 +186,7 @@ public class OrderController {
             }
         });
 
-        tableCart.setItems(cartList);
+        tableCart.setItems(cartService.getCartItems());
     }
 
     private String generateStruk() {
@@ -212,15 +198,15 @@ public class OrderController {
 
         int total = 0;
 
-        for (CartItem item : cartList) {
-            sb.append(item.getNama())
+        for (CartItem item : cartService.getCartItems()) {
+            sb.append(item.getMenu().getNamaMakanan())
             .append("  x")
-            .append(item.getQty())
+            .append(item.getQuantity())
             .append("   = Rp ")
-            .append(item.getSubtotal())
+            .append((int) item.getSubtotal())
             .append("\n");
 
-            total += item.getSubtotal();
+            total += (int) item.getSubtotal();
         }
 
         sb.append("--------------------------------\n");
@@ -272,27 +258,6 @@ public class OrderController {
             new Alert(Alert.AlertType.INFORMATION, "Struk berhasil dicetak.").show();
         } else {
             new Alert(Alert.AlertType.ERROR, "Gagal mencetak struk.").show();
-        }
-    }
-
-    public static class CartItem {
-        private String nama;
-        private int qty;
-        private double subtotal;
-
-        public CartItem(String nama, int qty, double subtotal) {
-            this.nama = nama;
-            this.qty = qty;
-            this.subtotal = subtotal;
-        }
-
-        public String getNama() { return nama; }
-        public int getQty() { return qty; }
-        public double getSubtotal() { return subtotal; }
-
-        public void setQty(int qty) {
-            this.qty = qty;
-            this.subtotal = qty * (subtotal / qty);
         }
     }
 }
