@@ -17,13 +17,23 @@ public class DatabaseSeeder {
                 return;
             }
             
-            String sql = new BufferedReader(new InputStreamReader(inputStream))
+            String sqlContent = new BufferedReader(new InputStreamReader(inputStream))
                     .lines().collect(Collectors.joining("\n"));
-            
+
+            String[] sqlStatements = sqlContent.split(";");
+
             Statement stmt = conn.createStatement();
-            stmt.execute(sql);
+
+            for (String sql : sqlStatements) {
+                sql = sql.trim();
+                if (sql.isEmpty()) continue;
+
+                System.out.println("Menjalankan: " + sql + ";");
+                stmt.execute(sql + ";");
+            }
+
             System.out.println("Database berhasil di-seed (Reset & Isi Data)!");
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
