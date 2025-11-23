@@ -16,8 +16,8 @@
         <columns>
             <TableColumn fx:id="colMenu" text="Menu" prefWidth="200"/>
             <TableColumn fx:id="colQty" text="Qty" prefWidth="80"/>
-            <TableColumn fx:id="colHarga" text="Harga Satuan" prefWidth="150"/>
-            <TableColumn fx:id="colSubtotal" text="Subtotal" prefWidth="150"/>
+            <TableColumn fx:id="colHarga" text="Harga Satuan" prefWidth="120"/>
+            <TableColumn fx:id="colSubtotal" text="Subtotal" prefWidth="120"/>
         </columns>
     </TableView>
 

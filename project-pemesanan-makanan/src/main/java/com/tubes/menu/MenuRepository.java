@@ -13,7 +13,7 @@ public class MenuRepository {
     public List<MenuItem> getAllMenus() {
         List<MenuItem> menus = new ArrayList<>();
 
-        String sql = "SELECT id, nama_makanan, kategori, harga, is_available FROM menus WHERE is_available = TRUE";
+        String sql = "SELECT id, nama_makanan, kategori, harga, is_available FROM menus";
 
         try (Connection conn = Koneksi.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);

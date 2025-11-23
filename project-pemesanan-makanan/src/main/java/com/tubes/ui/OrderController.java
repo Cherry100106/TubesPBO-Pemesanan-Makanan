@@ -1,7 +1,11 @@
 package com.tubes.ui;
 
+import com.tubes.cart.CartItem;
+import com.tubes.cart.CartService;
+import com.tubes.cart.DefaultCartItemFactory;
 import com.tubes.menu.MenuItem;
 import com.tubes.menu.MenuRepository;
+import com.tubes.order.OrderService;
 
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -9,16 +13,19 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.print.PrinterJob;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 public class OrderController {
 
@@ -29,6 +36,7 @@ public class OrderController {
     @FXML private TableColumn<MenuItem, String> colAvailable;
 
     @FXML private TextField inputQty;
+    @FXML private TextField inputNamaPelanggan; 
     @FXML private Button btnAdd;
 
     @FXML private TableView<CartItem> tableCart;
@@ -39,16 +47,15 @@ public class OrderController {
 
     @FXML private Label labelTotal;
     @FXML private Button btnKonfirmasi;
-    private final MenuRepository menuRepo = new MenuRepository();
-    private ObservableList<MenuItem> menuList;
 
-    private final ObservableList<CartItem> cartList = FXCollections.observableArrayList();
-    private ObservableList<CartItem> cartItems = FXCollections.observableArrayList();
+    private final MenuRepository menuRepo = new MenuRepository();
+    private final CartService cartService = new CartService(new DefaultCartItemFactory());
+    private ObservableList<MenuItem> menuList;
+    private final OrderService orderService = new OrderService();
 
     @FXML
     public void initialize() {
         System.out.println("Order Page Loaded");
-
         loadMenuTable();
         setupCartTable();
         initCartTable();
@@ -57,42 +64,21 @@ public class OrderController {
     }
 
     private void loadMenuTable() {
-
-        colNamaMenu.setCellValueFactory(data ->
-                new SimpleStringProperty(data.getValue().getNamaMakanan())
-        );
-
-        colHarga.setCellValueFactory(data ->
-                new SimpleDoubleProperty(data.getValue().getHarga()).asObject()
-        );
-
-        colKategori.setCellValueFactory(data ->
-                new SimpleStringProperty(data.getValue().getKategori())
-        );
-
+        colNamaMenu.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getNamaMakanan()));
+        colHarga.setCellValueFactory(data -> new SimpleDoubleProperty(data.getValue().getHarga()).asObject());
+        colKategori.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getKategori()));
         colAvailable.setCellValueFactory(data ->
-                new SimpleStringProperty(data.getValue().isAvailable() ? "Tersedia" : "Tidak Tersedia")
-        );
+                new SimpleStringProperty(data.getValue().isAvailable() ? "Tersedia" : "Tidak Tersedia"));
 
         menuList = FXCollections.observableArrayList(menuRepo.getAllMenus());
         tableMenu.setItems(menuList);
     }
 
     private void initCartTable() {
-
-        colCartNama.setCellValueFactory(data ->
-                new SimpleStringProperty(data.getValue().getNama())
-        );
-
-        colCartQty.setCellValueFactory(data ->
-                new SimpleIntegerProperty(data.getValue().getQty()).asObject()
-        );
-
-        colCartSubtotal.setCellValueFactory(data ->
-                new SimpleDoubleProperty(data.getValue().getSubtotal()).asObject()
-        );
-
-        tableCart.setItems(cartList);
+        colCartNama.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getMenu().getNamaMakanan()));
+        colCartQty.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getQuantity()).asObject());
+        colCartSubtotal.setCellValueFactory(data -> new SimpleDoubleProperty(data.getValue().getSubtotal()).asObject());
+        tableCart.setItems(cartService.getCartItems());
     }
 
     private void setupAddButton() {
@@ -101,27 +87,58 @@ public class OrderController {
 
     private void setupConfirmButton() {
         btnKonfirmasi.setOnAction(e -> {
-            if (cartList.isEmpty()) {
-                new Alert(Alert.AlertType.WARNING, "Keranjang masih kosong!").show();
+            String namaPelanggan = inputNamaPelanggan.getText().trim();
+            if (namaPelanggan.isEmpty()) {
+                showAlert("Nama pelanggan wajib diisi!");
                 return;
             }
 
-            String struk = generateStruk();
+            if (cartService.getCartItems().isEmpty()) {
+                showAlert("Keranjang masih kosong!");
+                return;
+            }
+
+            try {
+                orderService.saveOrder(cartService.getCartItems(), namaPelanggan);
+                System.out.println("Pesanan berhasil disimpan untuk: " + namaPelanggan);
+            } catch (Exception ex) {
+                showAlert("Gagal simpan pesanan: " + ex.getMessage());
+                return;
+            }
+
+            String struk = generateStruk(namaPelanggan);
             printStruk(struk);
 
-            cartList.clear();
+            // Reset
+            inputNamaPelanggan.clear();
+            inputQty.clear();
+            cartService.getCartItems().clear();
+            tableCart.setItems(FXCollections.observableArrayList());
             updateTotal();
+
+            // Kembali ke Dashboard
+            kembaliKeDashboard();
         });
     }
 
-    private void addToCart() {
+    private void kembaliKeDashboard() {
+        try {
+            Stage stage = (Stage) btnKonfirmasi.getScene().getWindow();
+            Parent root = FXMLLoader.load(getClass().getResource("/com/tubes/ui/main_layout.fxml"));
+            stage.setScene(new Scene(root, 1200, 700));
+            stage.setTitle("Kasir App");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            showAlert("Gagal kembali ke dashboard.");
+        }
+    }
 
+    private void addToCart() {
         MenuItem selected = tableMenu.getSelectionModel().getSelectedItem();
         if (selected == null) {
             showAlert("Pilih menu terlebih dahulu!");
             return;
         }
-
         if (!selected.isAvailable()) {
             showAlert("Menu tidak tersedia!");
             return;
@@ -132,33 +149,17 @@ public class OrderController {
             qty = Integer.parseInt(inputQty.getText());
             if (qty <= 0) throw new NumberFormatException();
         } catch (NumberFormatException ex) {
-            showAlert("Jumlah harus angka dan lebih dari 0!");
+            showAlert("Jumlah harus angka > 0!");
             return;
         }
 
-        for (CartItem item : cartList) {
-            if (item.getNama().equals(selected.getNamaMakanan())) {
-                item.setQty(item.getQty() + qty);
-                tableCart.refresh();
-                updateTotal();
-                return;
-            }
-        }
-
-        cartList.add(new CartItem(
-                selected.getNamaMakanan(),
-                qty,
-                selected.getHarga() * qty
-        ));
-
+        cartService.addToCart(selected, qty);
+        tableCart.refresh();
         updateTotal();
     }
 
     private void updateTotal() {
-        double total = cartList.stream()
-                .mapToDouble(CartItem::getSubtotal)
-                .sum();
-
+        double total = cartService.getTotal();
         labelTotal.setText("Total: Rp " + (int) total);
     }
 
@@ -171,9 +172,7 @@ public class OrderController {
 
     private void setupCartTable() {
         colCartAksi.setCellFactory(column -> new TableCell<CartItem, Void>() {
-
             private final Button btnHapus = new Button("Hapus");
-
             {
                 btnHapus.setStyle(
                     "-fx-background-color: #d32f2f; " +
@@ -184,115 +183,75 @@ public class OrderController {
                 );
                 btnHapus.setPrefWidth(40);
                 btnHapus.setPrefHeight(10);
-
                 btnHapus.setOnAction(e -> {
                     CartItem item = getTableView().getItems().get(getIndex());
-                    cartList.remove(item);
+                    cartService.getCartItems().remove(item);
                     updateTotal();
                 });
             }
-
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) setGraphic(null);
-                else setGraphic(btnHapus);
+                setGraphic(empty ? null : btnHapus);
             }
         });
-
-        tableCart.setItems(cartList);
+        tableCart.setItems(cartService.getCartItems());
     }
 
-    private String generateStruk() {
+    private String generateStruk(String namaPelanggan) {
         StringBuilder sb = new StringBuilder();
-
         sb.append("======= STRUK PEMBAYARAN =======\n");
-        sb.append("Tanggal : ").append(java.time.LocalDateTime.now()).append("\n");
+        sb.append("Pelanggan : ").append(namaPelanggan).append("\n");
+        sb.append("Tanggal   : ").append(LocalDateTime.now()).append("\n");
         sb.append("--------------------------------\n");
 
         int total = 0;
-
-        for (CartItem item : cartList) {
-            sb.append(item.getNama())
-            .append("  x")
-            .append(item.getQty())
-            .append("   = Rp ")
-            .append(item.getSubtotal())
-            .append("\n");
-
-            total += item.getSubtotal();
+        for (CartItem item : cartService.getCartItems()) {
+            String line = String.format("%-20s x%-2d = Rp %d\n",
+                item.getMenu().getNamaMakanan(),
+                item.getQuantity(),
+                (int) item.getSubtotal()
+            );
+            sb.append(line);
+            total += (int) item.getSubtotal();
         }
 
         sb.append("--------------------------------\n");
-        sb.append("TOTAL : Rp ").append(total).append("\n");
+        sb.append(String.format("TOTAL     : Rp %d\n", total));
         sb.append("================================\n");
-
         return sb.toString();
     }
 
     private void printStruk(String struk) {
-        Alert previewAlert = new Alert(Alert.AlertType.CONFIRMATION);
-        previewAlert.setTitle("Preview Struk");
-        previewAlert.setHeaderText("Struk yang akan dicetak:");
+        Alert preview = new Alert(Alert.AlertType.CONFIRMATION);
+        preview.setTitle("Preview Struk");
+        preview.setHeaderText("Struk yang akan dicetak:");
 
-        TextArea previewArea = new TextArea(struk);
-        previewArea.setEditable(false);
-        previewArea.setWrapText(true);
-        previewArea.setFont(javafx.scene.text.Font.font("Consolas", 12));
-        previewArea.setPrefWidth(480);
-        previewArea.setPrefHeight(360);
+        TextArea area = new TextArea(struk);
+        area.setEditable(false);
+        area.setWrapText(true);
+        area.setFont(javafx.scene.text.Font.font("Consolas", 12));
+        area.setPrefSize(480, 360);
+        preview.getDialogPane().setContent(area);
 
-        previewAlert.getDialogPane().setContent(previewArea);
-        ButtonType cetak = new ButtonType("Cetak", javafx.scene.control.ButtonBar.ButtonData.OK_DONE);
-        ButtonType batal = new ButtonType("Batal", javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE);
-        previewAlert.getButtonTypes().setAll(cetak, batal);
+        ButtonType cetak = new ButtonType("Cetak", ButtonBar.ButtonData.OK_DONE);
+        ButtonType batal = new ButtonType("Batal", ButtonBar.ButtonData.CANCEL_CLOSE);
+        preview.getButtonTypes().setAll(cetak, batal);
 
-        var result = previewAlert.showAndWait();
-        if (result.isEmpty() || result.get() != cetak) return;
-
-        PrinterJob job = PrinterJob.createPrinterJob();
-        if (job == null) {
-            Alert error = new Alert(Alert.AlertType.ERROR, "Printer tidak ditemukan.");
-            error.show();
-            return;
-        }
-
-        if (!job.showPrintDialog(null)) {
-            return;
-        }
-
-        TextArea printArea = new TextArea(struk);
-        printArea.setFont(javafx.scene.text.Font.font("Consolas", 12));
-        printArea.setEditable(false);
-
-        boolean success = job.printPage(printArea);
-
-        if (success) {
-            job.endJob();
-            new Alert(Alert.AlertType.INFORMATION, "Struk berhasil dicetak.").show();
-        } else {
-            new Alert(Alert.AlertType.ERROR, "Gagal mencetak struk.").show();
-        }
-    }
-
-    public static class CartItem {
-        private String nama;
-        private int qty;
-        private double subtotal;
-
-        public CartItem(String nama, int qty, double subtotal) {
-            this.nama = nama;
-            this.qty = qty;
-            this.subtotal = subtotal;
-        }
-
-        public String getNama() { return nama; }
-        public int getQty() { return qty; }
-        public double getSubtotal() { return subtotal; }
-
-        public void setQty(int qty) {
-            this.qty = qty;
-            this.subtotal = qty * (subtotal / qty);
+        if (preview.showAndWait().orElse(batal) == cetak) {
+            PrinterJob job = PrinterJob.createPrinterJob();
+            if (job != null && job.showPrintDialog(null)) {
+                TextArea printArea = new TextArea(struk);
+                printArea.setFont(javafx.scene.text.Font.font("Consolas", 12));
+                if (job.printPage(printArea)) {
+                    job.endJob();
+                    new Alert(Alert.AlertType.INFORMATION, "Struk berhasil dicetak!").show();
+                } else {
+                    new Alert(Alert.AlertType.ERROR, "Gagal mencetak struk.").show();
+                }
+            } else {
+                new Alert(Alert.AlertType.WARNING, "Pencetakan dibatalkan.").show();
+            }
         }
     }
 }

@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 
 <VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.tubes.ui.DashboardController"
       spacing="30"
       style="-fx-padding: 30 20 20 20;">
 

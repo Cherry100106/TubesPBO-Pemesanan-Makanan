@@ -6,6 +6,13 @@
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.tubes.ui.OrderController">
+        
+    <top>
+        <HBox spacing="10" style="-fx-padding: 20;">
+            <Label text="Nama Pelanggan:" />
+            <TextField fx:id="inputNamaPelanggan" promptText="Contoh: Budi" prefWidth="250"/>
+        </HBox>
+    </top>
 
     <center>
         <HBox spacing="20" style="-fx-padding: 20;"
