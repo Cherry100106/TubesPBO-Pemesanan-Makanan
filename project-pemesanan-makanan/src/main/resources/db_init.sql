@@ -1,17 +1,7 @@
 DROP TABLE IF EXISTS order_details CASCADE;
 DROP TABLE IF EXISTS orders CASCADE;
 DROP TABLE IF EXISTS menus CASCADE;
-DROP TABLE IF EXISTS users CASCADE;
 
-
--- Tabel User (Untuk Login)
-CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    password VARCHAR(100) NOT NULL,
-    role VARCHAR(20) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
 
 -- Tabel Menu Makanan
 CREATE TABLE menus (
@@ -22,27 +12,25 @@ CREATE TABLE menus (
     is_available BOOLEAN DEFAULT TRUE
 );
 
+-- Tabel Orders
 CREATE TABLE orders (
     id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES users(id),
+    nama_pelanggan VARCHAR(100),
     tanggal_pesan TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    total_harga DECIMAL(10, 2),
+    total_harga DECIMAL(10, 2) NOT NULL,
     status VARCHAR(20) DEFAULT 'PENDING'
 );
 
+-- Tabel Order Details
 CREATE TABLE order_details (
     id SERIAL PRIMARY KEY,
-    order_id INT REFERENCES orders(id),
+    order_id INT REFERENCES orders(id) ON DELETE CASCADE,
     menu_id INT REFERENCES menus(id),
     jumlah INT NOT NULL,
     subtotal DECIMAL(10, 2) NOT NULL
 );
 
-
-INSERT INTO users (username, password, role) VALUES 
-('admin', 'admin123', 'admin'),
-('customer1', 'pass123', 'customer');
-
+-- Data awal: menu
 INSERT INTO menus (nama_makanan, kategori, harga, is_available) VALUES 
 ('Nasi Goreng Spesial', 'Makanan', 25000, TRUE),
 ('Ayam Bakar Madu', 'Makanan', 30000, TRUE),
@@ -51,10 +39,3 @@ INSERT INTO menus (nama_makanan, kategori, harga, is_available) VALUES
 ('Jus Jeruk', 'Minuman', 12000, TRUE),
 ('Kentang Goreng', 'Snack', 15000, TRUE),
 ('Pisang Goreng', 'Snack', 10000, FALSE);
-
-INSERT INTO orders (user_id, total_harga, status) VALUES 
-(2, 55000, 'PAID');
-
-INSERT INTO order_details (order_id, menu_id, jumlah, subtotal) VALUES 
-(1, 1, 1, 25000),
-(1, 2, 1, 30000);

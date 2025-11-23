@@ -7,7 +7,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import com.tubes.report.ReportFacade;
-import com.tubes.order.Order;
 
 public class TransactionHistoryController {
 

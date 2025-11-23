@@ -109,14 +109,12 @@ public class OrderController {
             String struk = generateStruk(namaPelanggan);
             printStruk(struk);
 
-            // Reset
             inputNamaPelanggan.clear();
             inputQty.clear();
             cartService.getCartItems().clear();
             tableCart.setItems(FXCollections.observableArrayList());
             updateTotal();
 
-            // Kembali ke Dashboard
             kembaliKeDashboard();
         });
     }

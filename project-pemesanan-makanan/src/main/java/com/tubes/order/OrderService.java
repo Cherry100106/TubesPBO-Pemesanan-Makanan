@@ -18,7 +18,6 @@ public class OrderService {
         try (Connection conn = Koneksi.getConnection()) {
             conn.setAutoCommit(false);
 
-            // ✅ Langsung pakai query TANPA user_id
             String sqlOrder = "INSERT INTO orders (nama_pelanggan, total_harga, status) VALUES (?, ?, 'PAID') RETURNING id";
             try (PreparedStatement ps = conn.prepareStatement(sqlOrder)) {
                 ps.setString(1, namaPelanggan.trim());
@@ -28,7 +27,7 @@ public class OrderService {
                 rs.next();
                 int orderId = rs.getInt(1);
 
-                // Simpan detail pesanan
+                
                 String sqlDetail = "INSERT INTO order_details (order_id, menu_id, jumlah, subtotal) VALUES (?, ?, ?, ?)";
                 try (PreparedStatement psd = conn.prepareStatement(sqlDetail)) {
                     for (CartItem item : items) {
