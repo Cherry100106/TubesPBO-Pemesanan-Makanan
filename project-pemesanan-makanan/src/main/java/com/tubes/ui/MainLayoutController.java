@@ -1,5 +1,8 @@
 package com.tubes.ui;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,24 +14,38 @@ public class MainLayoutController {
 
     @FXML private Button btnDashboard;
     @FXML private Button btnOrder;
-    @FXML private Button btnMenu;
     @FXML private Button btnReport;
 
     @FXML private AnchorPane contentArea;
     @FXML private Label headerTitle;
 
+    private List<Button> navButtons;
+
     @FXML
     public void initialize() {
-        loadPage("DashboardPage.fxml", "Dashboard");
-
-        btnDashboard.setOnAction(e -> loadPage("DashboardPage.fxml", "Dashboard"));
-        btnOrder.setOnAction(e -> loadPage("OrderPage.fxml", "Kelola Pesanan"));
-        btnMenu.setOnAction(e -> loadPage("MenuPage.fxml", "Menu Makanan"));
-        btnReport.setOnAction(e -> loadPage("TransactionHistory.fxml", "Histori Transaksi"));
+        navButtons = Arrays.asList(btnDashboard, btnOrder, btnReport);
+        
+        btnDashboard.setOnAction(e -> loadPage("DashboardPage.fxml", "Dashboard", btnDashboard));
+        btnOrder.setOnAction(e -> loadPage("OrderPage.fxml", "Kelola Pesanan", btnOrder));
+        btnReport.setOnAction(e -> loadPage("TransactionHistory.fxml", "Histori Transaksi", btnReport));
+        
+        loadPage("DashboardPage.fxml", "Dashboard", btnDashboard);
     }
 
-    private void loadPage(String fileName, String title) {
+    private void resetButtonStyles() {
+        String activeStyleClass = "active-btn";
+        for (Button button : navButtons) {
+            button.getStyleClass().remove(activeStyleClass);
+        }
+    }
+
+    private void loadPage(String fileName, String title, Button activeButton) {
         try {
+            resetButtonStyles();
+            if (activeButton != null) {
+                activeButton.getStyleClass().add("active-btn");
+            }
+
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/tubes/ui/" + fileName)
             );

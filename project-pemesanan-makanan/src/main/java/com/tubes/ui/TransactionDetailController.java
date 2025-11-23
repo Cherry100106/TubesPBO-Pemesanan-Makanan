@@ -1,5 +1,7 @@
 package com.tubes.ui;
 
+import com.tubes.report.ReportFacade;
+
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,8 +13,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import com.tubes.report.ReportFacade;
-import com.tubes.order.OrderDetail;
 
 public class TransactionDetailController {
 
@@ -39,7 +39,6 @@ public class TransactionDetailController {
         colHarga.setCellValueFactory(new PropertyValueFactory<>("harga"));
         colSubtotal.setCellValueFactory(new PropertyValueFactory<>("subtotal"));
 
-        // ✅ AMBIL DATA NYATA DARI DATABASE
         ReportFacade report = new ReportFacade();
         var details = report.getTransactionDetails(trx.getOrderId());
 
