@@ -6,6 +6,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import com.tubes.report.ReportFacade;
+import com.tubes.order.Order;
 
 public class TransactionHistoryController {
 
@@ -20,9 +22,8 @@ public class TransactionHistoryController {
         colNama.setCellValueFactory(new PropertyValueFactory<>("namaPemesan"));
         colTotal.setCellValueFactory(new PropertyValueFactory<>("totalHarga"));
 
-        tableTransaksi.setItems(getDummyData());
+        tableTransaksi.setItems(loadRealData());
 
-        // klik 1 row = buka detail transaksi
         tableTransaksi.setOnMouseClicked(e -> {
             if (e.getClickCount() == 2) {
                 TransactionRow selected = tableTransaksi.getSelectionModel().getSelectedItem();
@@ -33,12 +34,16 @@ public class TransactionHistoryController {
         });
     }
 
-    // Data dummy
-    private ObservableList<TransactionRow> getDummyData() {
+    private ObservableList<TransactionRow> loadRealData() {
+        ReportFacade report = new ReportFacade();
         return FXCollections.observableArrayList(
-                new TransactionRow("TRX001", "Budi", 42000),
-                new TransactionRow("TRX002", "Siti", 42000),
-                new TransactionRow("TRX003", "Aldi", 42000)
+            report.getAllTransactions().stream()
+                .map(order -> new TransactionRow(
+                    order.getId(),
+                    order.getNamaPemesan(),
+                    (int) order.getTotalHarga()
+                ))
+                .toList()
         );
     }
 }

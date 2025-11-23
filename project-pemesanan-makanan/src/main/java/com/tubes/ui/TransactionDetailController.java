@@ -11,6 +11,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import com.tubes.report.ReportFacade;
+import com.tubes.order.OrderDetail;
 
 public class TransactionDetailController {
 
@@ -30,45 +32,46 @@ public class TransactionDetailController {
         this.transaksi = trx;
 
         labelId.setText("ID Transaksi: " + trx.getIdTransaksi());
-        labelTanggal.setText("Tanggal: 2025-11-22");
+        labelTanggal.setText("Tanggal: " + java.time.LocalDate.now());
 
         colMenu.setCellValueFactory(new PropertyValueFactory<>("menu"));
         colQty.setCellValueFactory(new PropertyValueFactory<>("qty"));
         colHarga.setCellValueFactory(new PropertyValueFactory<>("harga"));
         colSubtotal.setCellValueFactory(new PropertyValueFactory<>("subtotal"));
 
-        // dummy detail
-        var detail = FXCollections.observableArrayList(
-                new DetailRow("Nasi Goreng", 1, 12000),
-                new DetailRow("Ayam Geprek", 2, 15000)
+        // ✅ AMBIL DATA NYATA DARI DATABASE
+        ReportFacade report = new ReportFacade();
+        var details = report.getTransactionDetails(trx.getOrderId());
+
+        var detailRows = FXCollections.observableArrayList(
+            details.stream()
+                .map(d -> new DetailRow(
+                    d.getNamaMenu(),
+                    d.getJumlah(),
+                    (int) (d.getSubtotal() / d.getJumlah()) // harga satuan
+                ))
+                .toList()
         );
 
-        tableDetail.setItems(detail);
+        tableDetail.setItems(detailRows);
 
-        // hitung total
-        int total = detail.stream()
-                .mapToInt(DetailRow::getSubtotal)
-                .sum();
-
+        int total = detailRows.stream().mapToInt(DetailRow::getSubtotal).sum();
         labelTotal.setText("Total Harga: Rp " + total);
     }
 
     public static void showDetailWindow(TransactionRow trx) {
         try {
             FXMLLoader loader = new FXMLLoader(
-                    TransactionDetailController.class.getResource("/com/tubes/ui/TransactionDetail.fxml")
+                TransactionDetailController.class.getResource("/com/tubes/ui/TransactionDetail.fxml")
             );
-
             Parent root = loader.load();
             TransactionDetailController controller = loader.getController();
             controller.setData(trx);
-
             Stage stage = new Stage();
             stage.setTitle("Detail Transaksi");
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
-
         } catch (Exception e) {
             e.printStackTrace();
         }

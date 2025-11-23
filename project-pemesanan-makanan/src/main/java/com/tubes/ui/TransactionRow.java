@@ -1,16 +1,19 @@
 package com.tubes.ui;
 
 public class TransactionRow {
-    private String idTransaksi;
-    private String namaPemesan;
-    private int totalHarga;
+    private final int orderId;
+    private final String idTransaksi;
+    private final String namaPemesan;
+    private final int totalHarga;
 
-    public TransactionRow(String idTransaksi, String namaPemesan, int totalHarga) {
-        this.idTransaksi = idTransaksi;
-        this.namaPemesan = namaPemesan;
+    public TransactionRow(int orderId, String namaPemesan, int totalHarga) {
+        this.orderId = orderId;
+        this.idTransaksi = "TRX" + String.format("%03d", orderId);
+        this.namaPemesan = namaPemesan != null ? namaPemesan : "Pelanggan";
         this.totalHarga = totalHarga;
     }
 
+    public int getOrderId() { return orderId; }
     public String getIdTransaksi() { return idTransaksi; }
     public String getNamaPemesan() { return namaPemesan; }
     public int getTotalHarga() { return totalHarga; }
