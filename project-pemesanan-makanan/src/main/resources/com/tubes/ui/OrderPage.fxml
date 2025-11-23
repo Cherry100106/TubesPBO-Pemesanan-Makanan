@@ -55,9 +55,10 @@
                            HBox.hgrow="ALWAYS">
 
                     <columns>
-                        <TableColumn fx:id="colCartNama" text="Menu" prefWidth="150"/>
+                        <TableColumn fx:id="colCartNama" text="Menu" prefWidth="160"/>
                         <TableColumn fx:id="colCartQty" text="Qty" prefWidth="50"/>
-                        <TableColumn fx:id="colCartSubtotal" text="Subtotal" prefWidth="100"/>
+                        <TableColumn fx:id="colCartSubtotal" text="Subtotal" prefWidth="140"/>
+                        <TableColumn fx:id="colCartAksi" text="Aksi" prefWidth="75"/>
                     </columns>
                 </TableView>
 
