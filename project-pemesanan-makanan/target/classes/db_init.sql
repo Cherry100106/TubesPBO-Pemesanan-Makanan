@@ -49,7 +49,8 @@ INSERT INTO menus (nama_makanan, kategori, harga, is_available) VALUES
 ('Mie Goreng Jawa', 'Makanan', 22000, TRUE),
 ('Es Teh Manis', 'Minuman', 5000, TRUE),
 ('Jus Jeruk', 'Minuman', 12000, TRUE),
-('Kentang Goreng', 'Snack', 15000, TRUE);
+('Kentang Goreng', 'Snack', 15000, TRUE),
+('Pisang Goreng', 'Snack', 10000, FALSE);
 
 INSERT INTO orders (user_id, total_harga, status) VALUES 
 (2, 55000, 'PAID');
