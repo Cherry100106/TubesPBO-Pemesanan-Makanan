@@ -1,5 +1,9 @@
 package com.tubes.ui;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.stream.Collectors;
+
 import com.tubes.cart.CartItem;
 import com.tubes.cart.CartService;
 import com.tubes.cart.DefaultCartItemFactory;
@@ -17,15 +21,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.print.PrinterJob;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
-import javafx.stage.Modality;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.stream.Collectors;
 
 public class OrderController {
 
@@ -203,21 +209,27 @@ public class OrderController {
         sb.append("Tanggal   : ").append(LocalDateTime.now()).append("\n");
         sb.append("--------------------------------\n");
 
-        int total = 0;
-        for (CartItem item : cartService.getCartItems()) {
-            String line = String.format("%-20s x%-2d = Rp %d\n",
+        // Use generic joinLines helper to build receipt lines
+        String lines = joinLines(cartService.getCartItems(), item ->
+            String.format("%-20s x%-2d = Rp %d\n",
                 item.getMenu().getNamaMakanan(),
                 item.getQuantity(),
-                (int) item.getSubtotal()
-            );
-            sb.append(line);
-            total += (int) item.getSubtotal();
-        }
+                (int) item.getSubtotal())
+        );
+        sb.append(lines);
+
+        int total = (int) cartService.getTotal();
 
         sb.append("--------------------------------\n");
         sb.append(String.format("TOTAL     : Rp %d\n", total));
         sb.append("================================\n");
         return sb.toString();
+    }
+
+    // Generic helper: join lines from any ObservableList using a mapper function
+    private <T> String joinLines(ObservableList<T> items, java.util.function.Function<T, String> mapper) {
+        if (items == null || items.isEmpty()) return "";
+        return items.stream().map(mapper).collect(Collectors.joining());
     }
 
     private void printStruk(String struk) {
