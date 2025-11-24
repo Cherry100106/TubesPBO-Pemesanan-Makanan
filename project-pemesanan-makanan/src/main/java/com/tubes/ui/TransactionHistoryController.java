@@ -1,12 +1,13 @@
 package com.tubes.ui;
 
+import com.tubes.report.ReportFacade;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import com.tubes.report.ReportFacade;
 
 public class TransactionHistoryController {
 

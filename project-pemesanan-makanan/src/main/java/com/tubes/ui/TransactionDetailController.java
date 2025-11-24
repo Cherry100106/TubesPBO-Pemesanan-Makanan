@@ -47,7 +47,7 @@ public class TransactionDetailController {
                 .map(d -> new DetailRow(
                     d.getNamaMenu(),
                     d.getJumlah(),
-                    (int) (d.getSubtotal() / d.getJumlah()) // harga satuan
+                    (int) (d.getSubtotal() / d.getJumlah()) 
                 ))
                 .toList()
         );

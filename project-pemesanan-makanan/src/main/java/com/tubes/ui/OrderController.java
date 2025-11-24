@@ -61,7 +61,6 @@ public class OrderController {
 
     @FXML
     public void initialize() {
-        System.out.println("Order Page Loaded");
         loadMenuTable();
         setupCartTable();
         initCartTable();
@@ -106,7 +105,6 @@ public class OrderController {
 
             try {
                 orderService.saveOrder(cartService.getCartItems(), namaPelanggan);
-                System.out.println("Pesanan berhasil disimpan untuk: " + namaPelanggan);
             } catch (Exception ex) {
                 showAlert("Gagal simpan pesanan: " + ex.getMessage());
                 return;
@@ -204,14 +202,13 @@ public class OrderController {
 
     private String generateStruk(String namaPelanggan) {
         StringBuilder sb = new StringBuilder();
-        sb.append("======= STRUK PEMBAYARAN =======\n");
-        sb.append("Pelanggan : ").append(namaPelanggan).append("\n");
-        sb.append("Tanggal   : ").append(LocalDateTime.now()).append("\n");
-        sb.append("--------------------------------\n");
+        sb.append(String.format("%32s\n", "======= STRUK PEMBAYARAN =======").replace(' ', '='));
+        sb.append(String.format("Pelanggan: %s\n", namaPelanggan));
+        sb.append(String.format("Tanggal: %s\n", LocalDateTime.now()));
+        sb.append("--------------------------------\n"); 
 
-        // Use generic joinLines helper to build receipt lines
         String lines = joinLines(cartService.getCartItems(), item ->
-            String.format("%-20s x%-2d = Rp %d\n",
+            String.format("%-24s x%-2d = Rp %d\n", 
                 item.getMenu().getNamaMakanan(),
                 item.getQuantity(),
                 (int) item.getSubtotal())
@@ -221,12 +218,11 @@ public class OrderController {
         int total = (int) cartService.getTotal();
 
         sb.append("--------------------------------\n");
-        sb.append(String.format("TOTAL     : Rp %d\n", total));
-        sb.append("================================\n");
+        sb.append(String.format("TOTAL : Rp %d\n", total));
+        sb.append(String.format("%32s\n", "================================").replace(' ', '='));
         return sb.toString();
     }
 
-    // Generic helper: join lines from any ObservableList using a mapper function
     private <T> String joinLines(ObservableList<T> items, java.util.function.Function<T, String> mapper) {
         if (items == null || items.isEmpty()) return "";
         return items.stream().map(mapper).collect(Collectors.joining());
@@ -241,7 +237,9 @@ public class OrderController {
         area.setEditable(false);
         area.setWrapText(true);
         area.setFont(javafx.scene.text.Font.font("Consolas", 12));
-        area.setPrefSize(480, 360);
+        area.setPrefSize(320, 360); 
+        area.setStyle("-fx-text-alignment: center;"); 
+        
         preview.getDialogPane().setContent(area);
 
         ButtonType cetak = new ButtonType("Cetak", ButtonBar.ButtonData.OK_DONE);
@@ -253,6 +251,8 @@ public class OrderController {
             if (job != null && job.showPrintDialog(null)) {
                 TextArea printArea = new TextArea(struk);
                 printArea.setFont(javafx.scene.text.Font.font("Consolas", 12));
+                printArea.setStyle("-fx-text-alignment: center;"); 
+                
                 if (job.printPage(printArea)) {
                     job.endJob();
                     new Alert(Alert.AlertType.INFORMATION, "Struk berhasil dicetak!").show();
