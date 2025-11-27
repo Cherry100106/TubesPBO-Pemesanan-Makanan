@@ -18,14 +18,10 @@ import javafx.print.PrinterJob;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.stream.Collectors;
 
 public class OrderController {
 
