@@ -3,8 +3,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.tubes.ui.TransactionHistoryController"
+<BorderPane xmlns:fx="http://javafx.com/fxml" 
+            fx:controller="com.tubes.ui.TransactionHistoryController" 
             prefWidth="1100" prefHeight="700">
 
     <stylesheets>
@@ -21,7 +21,7 @@
     <center>
         <VBox spacing="20" style="-fx-padding: 20;">
 
-            <TableView fx:id="tableTransaksi" prefHeight="600">
+            <TableView fx:id="tableTransaksi" prefHeight="600" styleClass="history-table">
                 <columns>
                     <TableColumn fx:id="colId" text="ID Transaksi" prefWidth="150"/>
                     <TableColumn fx:id="colNama" text="Nama Pemesan" prefWidth="250"/>

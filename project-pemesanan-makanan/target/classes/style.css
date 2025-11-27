@@ -21,10 +21,79 @@
 
 .table-row-cell:hover {
     -fx-background-color: #e2e8f0;
+    -fx-text-fill: #333333;
     -fx-cursor: hand;
+}
+
+.table-row-cell:hover .text {
+    -fx-fill: #333333; 
+}
+
+.table-row-cell:filled:selected {
+    -fx-background-color: #1976d2; 
+    -fx-text-fill: white;
+}
+
+.table-row-cell:filled:selected .text {
+    -fx-fill: white;
 }
 
 .hover-blue:hover {
     -fx-background-color: #125a9c;
     -fx-cursor: hand;
+}
+
+/* KELOLA PESANAN (table-menu dan table-cart) */
+.table-menu .column-header-background,
+.table-menu .column-header,
+.table-menu .column-header-background .filler,
+.table-cart .column-header-background,
+.table-cart .column-header,
+.table-cart .column-header-background .filler {
+    -fx-background-color: #125a9c; 
+}
+
+.table-menu .column-header .label,
+.table-cart .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* HISTORI TRANSAKSI (history-table) */
+.history-table .column-header-background,
+.history-table .column-header,
+.history-table .column-header-background .filler {
+    -fx-background-color: #125a9c; 
+}
+
+.history-table .column-header .label {
+    -fx-text-fill: white; 
+    -fx-font-weight: bold;
+}
+
+/* DETAIL TRANSAKSI (detail-table) */
+.detail-table .column-header-background,
+.detail-table .column-header,
+.detail-table .column-header-background .filler {
+    -fx-background-color: #125a9c; 
+}
+
+.detail-table .column-header .label {
+    -fx-text-fill: white; 
+    -fx-font-weight: bold;
+}
+
+.detail-info-header {
+    -fx-background-color: #1976d2; 
+}
+
+.header-label-white {
+    -fx-text-fill: white;
+}
+
+.total-label-final {
+    -fx-text-fill: #373d53; 
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-padding: 5 0 0 0;
 }

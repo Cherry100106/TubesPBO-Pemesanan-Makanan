@@ -1,5 +1,7 @@
 package com.tubes.cart;
 
+import java.util.function.ToDoubleFunction;
+
 import com.tubes.menu.MenuItem;
 
 import javafx.collections.FXCollections;
@@ -28,9 +30,12 @@ public class CartService {
         cartItems.add(factory.create(menu, qty));
     }
 
+    public static <T> double sumDouble(ObservableList<T> items, ToDoubleFunction<T> mapper) {
+        if (items == null || items.isEmpty()) return 0.0;
+        return items.stream().mapToDouble(mapper).sum();
+    }
+
     public double getTotal() {
-        return cartItems.stream()
-                .mapToDouble(CartItem::getSubtotal)
-                .sum();
+        return sumDouble(cartItems, CartItem::getSubtotal);
     }
 }
