@@ -3,6 +3,8 @@ package com.tubes.ui;
 import com.tubes.cart.CartItem;
 import com.tubes.cart.CartService;
 import com.tubes.cart.DefaultCartItemFactory;
+import com.tubes.command.Command;
+import com.tubes.command.SaveOrderCommand;
 import com.tubes.menu.MenuItem;
 import com.tubes.menu.MenuRepository;
 import com.tubes.order.OrderService;
@@ -22,6 +24,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OrderController {
 
@@ -95,7 +99,9 @@ public class OrderController {
             }
 
             try {
-                orderService.saveOrder(cartService.getCartItems(), namaPelanggan);
+                List<CartItem> itemsToSave = new ArrayList<>(cartService.getCartItems());
+                Command saveCommand = new SaveOrderCommand(orderService, itemsToSave, namaPelanggan);
+                saveCommand.execute();
                 System.out.println("Pesanan berhasil disimpan untuk: " + namaPelanggan);
             } catch (Exception ex) {
                 showAlert("Gagal simpan pesanan: " + ex.getMessage());

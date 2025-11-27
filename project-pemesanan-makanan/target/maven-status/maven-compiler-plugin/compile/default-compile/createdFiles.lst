@@ -3,7 +3,6 @@ com\tubes\ui\DashboardController.class
 com\tubes\ui\TransactionHistoryController.class
 com\tubes\factory\OrderFactory.class
 com\tubes\ui\MainLayoutController.class
-com\tubes\App.class
 com\tubes\order\Order.class
 com\tubes\db\DatabaseSeeder.class
 com\tubes\ui\TransactionRow.class
@@ -15,7 +14,6 @@ com\tubes\ui\TransactionDetailController$DetailRow.class
 com\tubes\report\ReportFacade.class
 com\tubes\ui\Main.class
 com\tubes\ui\OrderController$1.class
-com\tubes\ui\OrderController.class
 com\tubes\cart\DefaultCartItemFactory.class
 com\tubes\menu\MenuRepository.class
 com\tubes\cart\CartItem.class
