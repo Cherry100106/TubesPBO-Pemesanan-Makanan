@@ -6,6 +6,10 @@ import java.util.List;
 public class OrderEventBroker {
     private static final List<Runnable> listeners = new ArrayList<>();
 
+    private OrderEventBroker() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static void addListener(Runnable listener) {
         listeners.add(listener);
     }

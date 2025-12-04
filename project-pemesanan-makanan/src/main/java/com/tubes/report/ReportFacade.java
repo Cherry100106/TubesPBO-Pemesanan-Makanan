@@ -6,7 +6,15 @@ import com.tubes.order.OrderRepository;
 import java.util.List;
 
 public class ReportFacade {
-    private final OrderRepository orderRepo = new OrderRepository();
+    private OrderRepository orderRepo;
+
+    public ReportFacade() {
+        this.orderRepo = new OrderRepository();
+    }
+
+    public ReportFacade(OrderRepository repo) {
+        this.orderRepo = repo;
+    }
 
     public int getOrderCountToday() {
         return orderRepo.getOrderCountToday();
