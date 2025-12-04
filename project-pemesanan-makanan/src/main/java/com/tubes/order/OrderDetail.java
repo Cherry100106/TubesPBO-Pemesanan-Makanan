@@ -5,7 +5,9 @@ public class OrderDetail {
     private double subtotal;
     private String namaMenu;
 
-    public OrderDetail() {}
+    public OrderDetail() {
+      // Default constructor
+    }
 
     public int getJumlah() { return jumlah; }
     public void setJumlah(int jumlah) { this.jumlah = jumlah; }

@@ -1,5 +1,9 @@
 package com.tubes.ui;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.tubes.report.ReportFacade;
 
 import javafx.collections.FXCollections;
@@ -16,6 +20,8 @@ import javafx.stage.Stage;
 
 public class TransactionDetailController {
 
+    private static final Logger logger = Logger.getLogger(TransactionDetailController.class.getName());
+
     @FXML private Label labelId;
     @FXML private Label labelTanggal;
     @FXML private Label labelTotal;
@@ -26,10 +32,8 @@ public class TransactionDetailController {
     @FXML private TableColumn<DetailRow, Integer> colHarga;
     @FXML private TableColumn<DetailRow, Integer> colSubtotal;
 
-    private TransactionRow transaksi;
-
     public void setData(TransactionRow trx) {
-        this.transaksi = trx;
+        // use trx locally; do not store as a field to avoid unused-member warnings
 
         labelId.setText("ID Transaksi: " + trx.getIdTransaksi());
         labelTanggal.setText("Tanggal: " + java.time.LocalDate.now());
@@ -71,8 +75,8 @@ public class TransactionDetailController {
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException | RuntimeException e) {
+            logger.log(Level.SEVERE, e, () -> "Gagal menampilkan detail transaksi: " + trx.getIdTransaksi());
         }
     }
 

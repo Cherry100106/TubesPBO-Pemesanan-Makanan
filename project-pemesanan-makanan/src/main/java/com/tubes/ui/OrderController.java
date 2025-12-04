@@ -13,6 +13,7 @@ import com.tubes.command.SaveOrderCommand;
 import com.tubes.menu.MenuItem;
 import com.tubes.menu.MenuRepository;
 import com.tubes.order.OrderService;
+import com.tubes.order.OrderServiceException;
 
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -116,7 +117,8 @@ public class OrderController {
                 Command saveCommand = new SaveOrderCommand(orderService, itemsToSave, namaPelanggan);
                 saveCommand.execute();
                 logger.info(() -> "Pesanan berhasil disimpan untuk: " + namaPelanggan);
-            } catch (Exception ex) {
+            } catch (OrderServiceException ex) {
+                logger.log(Level.SEVERE, "Gagal simpan pesanan", ex);
                 showAlert("Gagal simpan pesanan: " + ex.getMessage());
                 return;
             }

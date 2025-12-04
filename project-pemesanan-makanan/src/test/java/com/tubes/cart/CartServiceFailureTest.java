@@ -3,6 +3,7 @@ package com.tubes.cart;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,8 @@ class CartServiceFailureTest {
 
         CartItem item = items.get(0);
 
-        assertThrows(NullPointerException.class, item::getSubtotal);
+        NullPointerException exception = assertThrows(NullPointerException.class, item::getSubtotal);
+        assertNotNull(exception);
     }
 
     @Test
@@ -55,8 +57,9 @@ class CartServiceFailureTest {
 
         ObservableList<CartItem> items = FXCollections.observableArrayList(service.getCartItems());
 
-        assertThrows(RuntimeException.class, () -> 
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> 
                 CartService.sumDouble(items, it -> { throw new RuntimeException("mapper fail"); })
         );
+        assertNotNull(exception);
     }
 }

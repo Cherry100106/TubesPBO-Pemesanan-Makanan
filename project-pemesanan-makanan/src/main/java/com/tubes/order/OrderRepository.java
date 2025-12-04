@@ -1,12 +1,19 @@
 package com.tubes.order;
 
-import com.tubes.db.Koneksi;
-import com.tubes.factory.OrderFactory;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.tubes.db.Koneksi;
+import com.tubes.factory.OrderFactory;
 
 public class OrderRepository {
+    private static final Logger LOGGER = Logger.getLogger(OrderRepository.class.getName());
 
     public List<Order> getAllOrders() {
         List<Order> orders = new ArrayList<>();
@@ -17,15 +24,15 @@ public class OrderRepository {
         """;
 
         try (Connection conn = Koneksi.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 Order order = OrderFactory.createFromResultSet(rs);
                 orders.add(order);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error fetching all orders", e);
         }
         return orders;
     }
@@ -40,7 +47,7 @@ public class OrderRepository {
             """;
 
         try (Connection conn = Koneksi.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, orderId);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -50,37 +57,37 @@ public class OrderRepository {
                 d.setNamaMenu(rs.getString("nama_makanan"));
                 details.add(d);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e, () -> "Error fetching order details for order ID: " + orderId);
         }
         return details;
     }
 
-public int getOrderCountToday() {
-    String sql = "SELECT COUNT(*) FROM orders WHERE tanggal_pesan::date = CURRENT_DATE";
-    try (Connection conn = Koneksi.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql);
-         ResultSet rs = stmt.executeQuery()) {
-        rs.next();
-        return rs.getInt(1);
-    } catch (Exception e) {
-        e.printStackTrace();
-        return 0;
+    public int getOrderCountToday() {
+        String sql = "SELECT COUNT(*) FROM orders WHERE tanggal_pesan::date = CURRENT_DATE";
+        try (Connection conn = Koneksi.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
+            rs.next();
+            return rs.getInt(1);
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error fetching order count today", e);
+            return 0;
+        }
     }
-}
 
-public double getTotalIncomeToday() {
-    String sql = "SELECT COALESCE(SUM(total_harga), 0) FROM orders WHERE tanggal_pesan::date = CURRENT_DATE";
-    try (Connection conn = Koneksi.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql);
-         ResultSet rs = stmt.executeQuery()) {
-        rs.next();
-        return rs.getDouble(1);
-    } catch (Exception e) {
-        e.printStackTrace();
-        return 0.0;
+    public double getTotalIncomeToday() {
+        String sql = "SELECT COALESCE(SUM(total_harga), 0) FROM orders WHERE tanggal_pesan::date = CURRENT_DATE";
+        try (Connection conn = Koneksi.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
+            rs.next();
+            return rs.getDouble(1);
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error fetching total income today", e);
+            return 0.0;
+        }
     }
-}
 
     public int getOutOfStockItemsSoldToday() {
         String sql = """
@@ -92,12 +99,12 @@ public double getTotalIncomeToday() {
             AND m.is_available = FALSE
             """;
         try (Connection conn = Koneksi.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
             ResultSet rs = stmt.executeQuery();
             rs.next();
             return rs.getInt(1);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error fetching out of stock items sold today", e);
             return 0;
         }
     }

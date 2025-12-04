@@ -1,7 +1,10 @@
 package com.tubes.ui;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,6 +14,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 
 public class MainLayoutController {
+
+    private static final Logger logger = Logger.getLogger(MainLayoutController.class.getName());
 
     @FXML private Button btnDashboard;
     @FXML private Button btnOrder;
@@ -59,9 +64,9 @@ public class MainLayoutController {
             AnchorPane.setLeftAnchor(root, 0.0);
             AnchorPane.setRightAnchor(root, 0.0);
 
-        } catch (Exception e) {
-            System.out.println("FAILED TO LOAD PAGE: " + fileName);
-            e.printStackTrace();
+        } catch (IOException | RuntimeException e) {
+            logger.log(Level.WARNING, "Failed to load page: {0}", fileName);
+            logger.log(Level.SEVERE, e, () -> "Error loading page: " + fileName);
         }
     }
 }

@@ -1,9 +1,10 @@
 package com.tubes.command;
 
+import java.util.List;
+
 import com.tubes.cart.CartItem;
 import com.tubes.order.OrderService;
-
-import java.util.List;
+import com.tubes.order.OrderServiceException;
 
 public class SaveOrderCommand implements Command {
     private final OrderService orderService;
@@ -17,7 +18,7 @@ public class SaveOrderCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public void execute() throws OrderServiceException {
         orderService.saveOrder(items, namaPelanggan);
     }
 }
