@@ -1,12 +1,13 @@
 package com.tubes.report;
 
+import java.util.List;
+
 import com.tubes.order.Order;
 import com.tubes.order.OrderDetail;
 import com.tubes.order.OrderRepository;
-import java.util.List;
 
 public class ReportFacade {
-    private OrderRepository orderRepo;
+    private final OrderRepository orderRepo;
 
     public ReportFacade() {
         this.orderRepo = new OrderRepository();
