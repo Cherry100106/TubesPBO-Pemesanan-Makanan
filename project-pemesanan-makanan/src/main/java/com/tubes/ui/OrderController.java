@@ -1,5 +1,10 @@
 package com.tubes.ui;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.tubes.cart.CartItem;
 import com.tubes.cart.CartService;
 import com.tubes.cart.DefaultCartItemFactory;
@@ -19,15 +24,24 @@ import javafx.fxml.FXMLLoader;
 import javafx.print.PrinterJob;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 public class OrderController {
+
+    private static final Logger logger = Logger.getLogger(OrderController.class.getName());
 
     @FXML private TableView<MenuItem> tableMenu;
     @FXML private TableColumn<MenuItem, String> colNamaMenu;
@@ -50,12 +64,11 @@ public class OrderController {
 
     private final MenuRepository menuRepo = new MenuRepository();
     private final CartService cartService = new CartService(new DefaultCartItemFactory());
-    private ObservableList<MenuItem> menuList;
     private final OrderService orderService = new OrderService();
 
     @FXML
     public void initialize() {
-        System.out.println("Order Page Loaded");
+        logger.info("Order Page Loaded");
         loadMenuTable();
         setupCartTable();
         initCartTable();
@@ -70,7 +83,7 @@ public class OrderController {
         colAvailable.setCellValueFactory(data ->
                 new SimpleStringProperty(data.getValue().isAvailable() ? "Tersedia" : "Tidak Tersedia"));
 
-        menuList = FXCollections.observableArrayList(menuRepo.getAllMenus());
+        ObservableList<MenuItem> menuList = FXCollections.observableArrayList(menuRepo.getAllMenus());
         tableMenu.setItems(menuList);
     }
 
@@ -102,7 +115,7 @@ public class OrderController {
                 List<CartItem> itemsToSave = new ArrayList<>(cartService.getCartItems());
                 Command saveCommand = new SaveOrderCommand(orderService, itemsToSave, namaPelanggan);
                 saveCommand.execute();
-                System.out.println("Pesanan berhasil disimpan untuk: " + namaPelanggan);
+                logger.info(() -> "Pesanan berhasil disimpan untuk: " + namaPelanggan);
             } catch (Exception ex) {
                 showAlert("Gagal simpan pesanan: " + ex.getMessage());
                 return;
@@ -128,7 +141,7 @@ public class OrderController {
             stage.setScene(new Scene(root, 1200, 700));
             stage.setTitle("Kasir App");
         } catch (IOException ex) {
-            ex.printStackTrace();
+            logger.log(Level.SEVERE, "Gagal kembali ke dashboard", ex);
             showAlert("Gagal kembali ke dashboard.");
         }
     }
@@ -171,9 +184,26 @@ public class OrderController {
     }
 
     private void setupCartTable() {
-        colCartAksi.setCellFactory(column -> new TableCell<CartItem, Void>() {
+        colCartAksi.setCellFactory(column -> createDeleteButtonCell());
+        tableCart.setItems(cartService.getCartItems());
+    }
+
+    private TableCell<CartItem, Void> createDeleteButtonCell() {
+        return new TableCell<CartItem, Void>() {
             private final Button btnHapus = new Button("Hapus");
-            {
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setupDeleteButton();
+                    setGraphic(btnHapus);
+                }
+            }
+
+            private void setupDeleteButton() {
                 btnHapus.setStyle(
                     "-fx-background-color: #d32f2f; " +
                     "-fx-text-fill: white; " +
@@ -189,13 +219,7 @@ public class OrderController {
                     updateTotal();
                 });
             }
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                setGraphic(empty ? null : btnHapus);
-            }
-        });
-        tableCart.setItems(cartService.getCartItems());
+        };
     }
 
     private String generateStruk(String namaPelanggan) {
@@ -207,7 +231,7 @@ public class OrderController {
 
         int total = 0;
         for (CartItem item : cartService.getCartItems()) {
-            String line = String.format("%-20s x%-2d = Rp %d\n",
+            String line = String.format("%-20s x%-2d = Rp %d%n",
                 item.getMenu().getNamaMakanan(),
                 item.getQuantity(),
                 (int) item.getSubtotal()
@@ -217,7 +241,7 @@ public class OrderController {
         }
 
         sb.append("--------------------------------\n");
-        sb.append(String.format("TOTAL     : Rp %d\n", total));
+        sb.append(String.format("TOTAL     : Rp %d%n", total));
         sb.append("================================\n");
         return sb.toString();
     }

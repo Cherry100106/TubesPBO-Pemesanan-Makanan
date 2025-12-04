@@ -1,5 +1,7 @@
 package com.tubes.cart;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,28 +12,30 @@ import com.tubes.menu.MenuItem;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class CartServiceFailureTest {
+class CartServiceFailureTest {
 
     private CartService service;
 
+    @SuppressWarnings("unused")
     @BeforeEach
-    public void setup() {
+    void setup() {
         service = new CartService(new DefaultCartItemFactory());
     }
 
     @Test
-    public void addingNullMenu_leadsToNullPointerWhenSubtotalAccessed() {
-        // adding a null menu will create a CartItem with a null Menu internally
+    void addingNullMenu_throwsNullPointerWhenAccessingSubtotal() {
         service.addToCart(null, 1);
 
-        assertEquals(1, service.getCartItems().size());
+        List<CartItem> items = service.getCartItems();
+        assertEquals(1, items.size(), "Cart should contain exactly one item");
 
-        // accessing subtotal should throw NullPointerException because menu is null
-        assertThrows(NullPointerException.class, () -> service.getCartItems().get(0).getSubtotal());
+        CartItem item = items.get(0);
+
+        assertThrows(NullPointerException.class, item::getSubtotal);
     }
 
     @Test
-    public void addingNegativeQuantity_resultsInNegativeSubtotal() {
+    void addingNegativeQuantity_resultsInNegativeSubtotal() {
         MenuItem menu = new MenuItem(1, "Pisang Goreng", "Snack", 10000, true);
 
         // current implementation does not validate quantity; it will accept negatives
@@ -45,7 +49,7 @@ public class CartServiceFailureTest {
     }
 
     @Test
-    public void sumDouble_withThrowingMapper_propagatesException() {
+    void sumDouble_withThrowingMapper_propagatesException() {
         MenuItem a = new MenuItem(10, "Es Teh", "Minuman", 5000, true);
         service.addToCart(a, 1);
 

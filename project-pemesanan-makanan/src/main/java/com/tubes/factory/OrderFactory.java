@@ -1,10 +1,16 @@
 package com.tubes.factory;
 
-import com.tubes.order.Order;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.tubes.order.Order;
+
 public class OrderFactory {
+
+    private OrderFactory() {
+
+    }
+    
     public static Order createFromResultSet(ResultSet rs) throws SQLException {
         Order order = new Order();
         order.setId(rs.getInt("id"));

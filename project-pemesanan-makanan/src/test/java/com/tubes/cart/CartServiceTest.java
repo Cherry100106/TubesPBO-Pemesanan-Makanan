@@ -9,17 +9,18 @@ import com.tubes.menu.MenuItem;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class CartServiceTest {
+class CartServiceTest {
 
     private CartService service;
 
+    @SuppressWarnings("unused")
     @BeforeEach
-    public void setup() {
+    void setup() {
         service = new CartService(new DefaultCartItemFactory());
     }
 
     @Test
-    public void addToCart_createsAndMergesItems() {
+    void addToCart_createsAndMergesItems() {
         MenuItem m1 = new MenuItem(1, "Nasi Goreng", "Makanan", 15000, true);
         MenuItem m2 = new MenuItem(2, "Nasi Goreng", "Makanan", 15000, true); // same name
 
@@ -33,7 +34,7 @@ public class CartServiceTest {
     }
 
     @Test
-    public void getTotal_and_sumDouble_workCorrectly() {
+    void getTotal_and_sumDouble_workCorrectly() {
         MenuItem a = new MenuItem(10, "Es Teh", "Minuman", 5000, true);
         MenuItem b = new MenuItem(11, "Kentang Goreng", "Snack", 15000, true);
 

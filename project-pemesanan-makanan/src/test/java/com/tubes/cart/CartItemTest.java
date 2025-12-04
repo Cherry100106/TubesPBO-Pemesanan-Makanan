@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Test;
 
 import com.tubes.menu.MenuItem;
 
-public class CartItemTest {
+class CartItemTest {
 
     @Test
-    public void testSubtotalAndAddQuantity() {
+    void testSubtotalAndAddQuantity() {
         MenuItem menu = new MenuItem(1, "Nasi Goreng", "Makanan", 10000, true);
         CartItem item = new CartItem(menu, 2);
 

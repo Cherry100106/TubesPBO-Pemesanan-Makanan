@@ -1,11 +1,11 @@
 package com.tubes.menu;
 
 public class MenuItem {
-    private int id;
-    private String namaMakanan;
-    private String kategori;
-    private double harga;
-    private boolean isAvailable;
+    private final int id;
+    private final String namaMakanan;
+    private final String kategori;
+    private final double harga;
+    private final boolean isAvailable;
 
     public MenuItem(int id, String namaMakanan, String kategori, double harga, boolean isAvailable) {
         this.id = id;

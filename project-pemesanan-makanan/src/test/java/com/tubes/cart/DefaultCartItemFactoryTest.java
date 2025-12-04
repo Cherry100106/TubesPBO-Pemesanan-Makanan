@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 
 import com.tubes.menu.MenuItem;
 
-public class DefaultCartItemFactoryTest {
+class DefaultCartItemFactoryTest {
 
     @Test
-    public void factoryCreatesCorrectCartItem() {
+    void factoryCreatesCorrectCartItem() {
         MenuItem menu = new MenuItem(10, "Ayam Bakar", "Makanan", 30000, true);
         DefaultCartItemFactory factory = new DefaultCartItemFactory();
 
