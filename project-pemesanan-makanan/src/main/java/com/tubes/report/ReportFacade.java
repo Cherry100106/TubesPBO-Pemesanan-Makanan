@@ -27,4 +27,12 @@ public class ReportFacade {
     public List<OrderDetail> getTransactionDetails(int orderId) {
         return orderRepo.getOrderDetails(orderId);
     }
+
+    public int getTotalItemsSoldToday() {
+        return orderRepo.getTotalItemsSoldToday();
+    }
+
+    public String getBestSellingItemToday() {
+        return orderRepo.getBestSellingItemToday();
+    }
 }

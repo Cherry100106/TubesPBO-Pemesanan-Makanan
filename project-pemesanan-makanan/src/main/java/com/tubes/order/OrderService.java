@@ -30,7 +30,7 @@ public class OrderService {
             }
             conn.setAutoCommit(false);
 
-            String sqlOrder = "INSERT INTO orders (nama_pelanggan, total_harga, status) VALUES (?, ?, 'PAID') RETURNING id";
+            String sqlOrder = "INSERT INTO orders (nama_pelanggan, total_harga, status, tanggal_pesan) VALUES (?, ?, 'PAID', CURRENT_TIMESTAMP) RETURNING id";
             try (PreparedStatement ps = conn.prepareStatement(sqlOrder)) {
                 ps.setString(1, namaPelanggan.trim());
                 ps.setDouble(2, hitungTotal(items));

@@ -108,4 +108,50 @@ public class OrderRepository {
             return 0;
         }
     }
+
+    public int getTotalItemsSoldToday() {
+        String sql = """
+            SELECT COALESCE(SUM(od.jumlah), 0) 
+            FROM order_details od 
+            JOIN orders o ON od.order_id = o.id 
+            WHERE o.tanggal_pesan::date = CURRENT_DATE
+        """;
+        
+        try (Connection conn = Koneksi.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error fetching total items sold today", e);
+        }
+        return 0;
+    }
+
+    public String getBestSellingItemToday() {
+        String sql = """
+            SELECT m.nama_makanan 
+            FROM order_details od 
+            JOIN orders o ON od.order_id = o.id 
+            JOIN menus m ON od.menu_id = m.id 
+            WHERE o.tanggal_pesan::date = CURRENT_DATE 
+            GROUP BY m.nama_makanan 
+            ORDER BY SUM(od.jumlah) DESC 
+            LIMIT 1
+        """;
+
+        try (Connection conn = Koneksi.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            
+            if (rs.next()) {
+                return rs.getString("nama_makanan");
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error fetching best selling item", e);
+        }
+        return "-";
+    }
 }

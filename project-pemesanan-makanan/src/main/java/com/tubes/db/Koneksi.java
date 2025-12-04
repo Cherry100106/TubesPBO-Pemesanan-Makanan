@@ -10,7 +10,7 @@ public class Koneksi {
     // Ubah sesuai konfigurasi database Anda
     private static final String URL = "jdbc:postgresql://localhost:5432/PemesananMakanan";
     private static final String USER = "postgres";
-    private static final String PASS = "postgres"; // Sesuaikan password, JANGAN gunakan password default di produksi!
+    private static final String PASS = "1234"; // Sesuaikan password, JANGAN gunakan password default di produksi!
 
     private static final Logger logger = Logger.getLogger(Koneksi.class.getName());
 
