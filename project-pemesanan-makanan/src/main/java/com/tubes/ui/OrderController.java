@@ -2,6 +2,7 @@ package com.tubes.ui;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.util.logging.Logger;
@@ -228,7 +230,8 @@ public class OrderController {
         StringBuilder sb = new StringBuilder();
         sb.append("======= STRUK PEMBAYARAN =======\n");
         sb.append("Pelanggan : ").append(namaPelanggan).append("\n");
-        sb.append("Tanggal   : ").append(LocalDateTime.now()).append("\n");
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        sb.append("Tanggal   : ").append(LocalDateTime.now().format(fmt)).append("\n");
         sb.append("--------------------------------\n");
 
         int total = 0;
@@ -249,35 +252,38 @@ public class OrderController {
     }
 
     private void printStruk(String struk) {
-        Alert preview = new Alert(Alert.AlertType.CONFIRMATION);
-        preview.setTitle("Preview Struk");
-        preview.setHeaderText("Struk yang akan dicetak:");
+    Alert preview = new Alert(Alert.AlertType.CONFIRMATION);
+    preview.setTitle("Preview Struk");
+    preview.setHeaderText("Struk yang akan dicetak:");
 
-        TextArea area = new TextArea(struk);
-        area.setEditable(false);
-        area.setWrapText(true);
-        area.setFont(javafx.scene.text.Font.font("Consolas", 12));
-        area.setPrefSize(480, 360);
-        preview.getDialogPane().setContent(area);
+    TextArea area = new TextArea(struk);
+    area.setEditable(false);
+    area.setWrapText(true);
+    area.setFont(Font.font("Consolas", 12));
+    area.setPrefSize(480, 360);
+    preview.getDialogPane().setContent(area);
 
-        ButtonType cetak = new ButtonType("Cetak", ButtonBar.ButtonData.OK_DONE);
-        ButtonType batal = new ButtonType("Batal", ButtonBar.ButtonData.CANCEL_CLOSE);
-        preview.getButtonTypes().setAll(cetak, batal);
+    ButtonType cetak = new ButtonType("Cetak", ButtonBar.ButtonData.OK_DONE);
+    ButtonType batal = new ButtonType("Batal", ButtonBar.ButtonData.CANCEL_CLOSE);
+    preview.getButtonTypes().setAll(cetak, batal);
 
-        if (preview.showAndWait().orElse(batal) == cetak) {
-            PrinterJob job = PrinterJob.createPrinterJob();
-            if (job != null && job.showPrintDialog(null)) {
-                TextArea printArea = new TextArea(struk);
-                printArea.setFont(javafx.scene.text.Font.font("Consolas", 12));
-                if (job.printPage(printArea)) {
-                    job.endJob();
-                    new Alert(Alert.AlertType.INFORMATION, "Struk berhasil dicetak!").show();
-                } else {
-                    new Alert(Alert.AlertType.ERROR, "Gagal mencetak struk.").show();
-                }
+    if (preview.showAndWait().orElse(batal) == cetak) {
+
+        PrinterJob job = PrinterJob.createPrinterJob();
+        if (job != null && job.showPrintDialog(null)) {
+
+            Label printLabel = new Label(struk);
+            printLabel.setFont(Font.font("Consolas", 12));
+            printLabel.setWrapText(true);
+
+            if (job.printPage(printLabel)) {
+                job.endJob();
+                new Alert(Alert.AlertType.INFORMATION, "Struk berhasil dicetak!").show();
             } else {
-                new Alert(Alert.AlertType.WARNING, "Pencetakan dibatalkan.").show();
+                new Alert(Alert.AlertType.ERROR, "Gagal mencetak struk.").show();
             }
         }
     }
+}
+
 }

@@ -8,9 +8,9 @@ import java.util.logging.Logger;
  @SuppressWarnings("java:S6437") 
 public class Koneksi {
     // GANTI 'tubes_pbo' dengan nama database masing masing
-    private static final String URL = "jdbc:postgresql://localhost:5432/PemesananMakanan";
+    private static final String URL = "jdbc:postgresql://localhost:5432/PBO_db";
     private static final String USER = "postgres";
-    private static final String PASS = "1234"; // Sesuaikan password
+    private static final String PASS = "Chi.3126"; // Sesuaikan password
 
     private static final Logger logger = Logger.getLogger(Koneksi.class.getName());
 
